@@ -1,2 +1,3 @@
-# Shared.Component.JsonToXmlStream
+# JsonToXmlStream
 Converts JSON to XML
+Uses the Newtonsoft JsonTextReader
