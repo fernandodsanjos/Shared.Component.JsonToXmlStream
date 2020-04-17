@@ -293,7 +293,7 @@ namespace Shared.Component
         {
             get
             {
-                throw new NotImplementedException();
+               return false;
             }
         }
 
@@ -301,7 +301,7 @@ namespace Shared.Component
         {
             get
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 
