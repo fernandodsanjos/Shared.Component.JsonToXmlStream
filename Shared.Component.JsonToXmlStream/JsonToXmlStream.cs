@@ -18,11 +18,38 @@ namespace Shared.Component
         private XmlWriter wtr = null;
         VirtualStream m_stm = null;
         JsonTextReader reader = null;
-        string rootName = string.Empty;
-        string ns = string.Empty;
-        string arrayName = string.Empty;
+        TextReader jsonInput = null;
+        
 
+        public bool OmitXmlDeclaration
+        {
+            get; set;
+        } = false;
 
+        public bool Indent
+        {
+            get; set;
+        } = false;
+
+        public string Namespace
+        {
+            get; set;
+        } = String.Empty;
+
+        public string RootName
+        {
+            get; set;
+        } = String.Empty;
+
+        public string ArrayName
+        {
+            get; set;
+        } = "record";
+
+        public Encoding Encoding
+        {
+            get; set;
+        }
 
         #region Constructors
         public JsonToXmlStream(TextReader json, string rootname, string ns,string arrayname) : this(json, rootname, ns, arrayname, UTF8Encoding.UTF8)
@@ -43,31 +70,40 @@ namespace Shared.Component
         }
         public JsonToXmlStream(TextReader json,string rootname, string ns, string arrayname, Encoding encoding)
         {
-            //new StringReader(json)
-            //new StreamReader(stream
-            m_stm = new VirtualStream();
-            wtr = XmlWriter.Create(m_stm, new XmlWriterSettings { Encoding = encoding, Indent = false });
-            reader = new JsonTextReader(json);
-            
-            //This does not work on a readonly stream like a network stream
-            //Match match = Regex.Match(json, @"^{[ \x00-\x1F\x7F]*'[a-z]*'[ \x00-\x1F\x7F]*:[ \x00-\x1F\x7F]*{", RegexOptions.IgnoreCase);
-
-            //if(match.Success == false && rootname == String.Empty)
-              //  rootname = "root";
-
-            rootName = rootname;
-            arrayName = string.IsNullOrEmpty(arrayname) ? "record" : arrayname;
-
-            this.ns = ns;
+            jsonInput = json;
+            RootName = rootname;
+            Namespace = ns;
+            ArrayName = arrayname;
+            Encoding = encoding;
         }
 
 
         #endregion
 
+        private void Init()
+        {
+            if (wtr == null)
+            {
+                m_stm = new VirtualStream();
+                wtr = XmlWriter.Create(m_stm, new XmlWriterSettings
+                {
+                    Encoding = this.Encoding,
+                    Indent = this.Indent,
+                    OmitXmlDeclaration = this.OmitXmlDeclaration
+                });
+                reader = new JsonTextReader(jsonInput);
+
+                //This does not work on a readonly stream like a network stream
+                //Match match = Regex.Match(json, @"^{[ \x00-\x1F\x7F]*'[a-z]*'[ \x00-\x1F\x7F]*:[ \x00-\x1F\x7F]*{", RegexOptions.IgnoreCase);
+
+            }
+        }
         public override int Read(byte[] buffer, int offset, int count)
         {
+            Init();
+
             if (m_stm.Length == 0)
-                Read(rootName);
+                Read(this.RootName);
 
             return m_stm.Read(buffer, offset, count);
 
@@ -80,10 +116,10 @@ namespace Shared.Component
 
             if (root != "")
             { 
-                if (wtr.WriteState == System.Xml.WriteState.Start && string.IsNullOrEmpty(this.ns) == false)
+                if (wtr.WriteState == System.Xml.WriteState.Start && string.IsNullOrEmpty(this.Namespace) == false)
                 {
 
-                    wtr.WriteStartElement(root, this.ns);
+                    wtr.WriteStartElement(root, this.Namespace);
                 }
                 else
                 {
@@ -157,10 +193,10 @@ namespace Shared.Component
 
         private void WriteObject(string name)
         {
-            if (wtr.WriteState == System.Xml.WriteState.Start && string.IsNullOrEmpty(this.ns) == false)
+            if (wtr.WriteState == System.Xml.WriteState.Start && string.IsNullOrEmpty(this.Namespace) == false)
             {
                
-                wtr.WriteStartElement(name,this.ns);
+                wtr.WriteStartElement(name,this.Namespace);
             }
             else
             {
@@ -176,7 +212,7 @@ namespace Shared.Component
                 {
                     case JsonToken.StartObject:
                         if (elementName == String.Empty)
-                            elementName = rootName;
+                            elementName = this.RootName;
 
                             WriteObject(elementName);
                         break;
@@ -233,7 +269,7 @@ namespace Shared.Component
                 {
                     case JsonToken.StartObject:
                         if (elementName == String.Empty)
-                            elementName = arrayName;
+                            elementName = this.ArrayName;
 
                         WriteObject(elementName);
                         break;
