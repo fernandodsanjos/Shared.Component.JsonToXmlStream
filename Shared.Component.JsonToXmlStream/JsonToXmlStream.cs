@@ -50,6 +50,11 @@ namespace Shared.Component
         {
             get; set;
         }
+        [Description("Set this to output attributes instead of elements when possible")]
+        public bool UseAttributes
+        {
+            get; set;
+        }
 
         #region Constructors
         public JsonToXmlStream(TextReader json, string rootname, string ns,string arrayname) : this(json, rootname, ns, arrayname, UTF8Encoding.UTF8)
@@ -153,9 +158,8 @@ namespace Shared.Component
                     case JsonToken.Boolean:
                     case JsonToken.Bytes:
 
-                        wtr.WriteStartElement(elementName);
-                        wtr.WriteValue(reader.Value);
-                        wtr.WriteEndElement();
+
+                        WriteValue(elementName);
 
 
                         break;
@@ -226,9 +230,7 @@ namespace Shared.Component
                     case JsonToken.Boolean:
                     case JsonToken.Bytes:
 
-                        wtr.WriteStartElement(elementName);
-                        wtr.WriteValue(reader.Value);
-                        wtr.WriteEndElement();
+                        WriteValue(elementName);
 
 
                         break;
@@ -312,6 +314,22 @@ namespace Shared.Component
             }
         }
 
+        private void WriteValue(string elementName)
+        {
+            if (UseAttributes && wtr.WriteState == System.Xml.WriteState.Element)
+            {
+                
+                wtr.WriteStartAttribute(elementName);
+                wtr.WriteValue(reader.Value);
+                wtr.WriteEndAttribute();
+            }
+            else
+            {
+                wtr.WriteStartElement(elementName);
+                wtr.WriteValue(reader.Value);
+                wtr.WriteEndElement();
+            }
+        }
         #region Stream standard overrides
         public override void Write(byte[] buffer, int offset, int count)
         {
