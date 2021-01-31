@@ -19,82 +19,49 @@ namespace Shared.Component
         VirtualStream m_stm = null;
         JsonTextReader reader = null;
         TextReader jsonInput = null;
+        JsonToXmlStreamSettings settings = null;
+
         
-
-        public bool OmitXmlDeclaration
+        public JsonToXmlStreamSettings Settings
         {
-            get; set;
-        } = false;
-
-        public bool Indent
-        {
-            get; set;
-        } = false;
-
-        public string Namespace
-        {
-            get; set;
-        } = String.Empty;
-
-        public string RootName
-        {
-            get; set;
-        } = String.Empty;
-
-        public string ArrayName
-        {
-            get; set;
-        } = "record";
-
-        public Encoding Encoding
-        {
-            get; set;
+            get
+            {
+                return settings;
+            }
+            set
+            {
+                settings = value;
+            }
         }
-        [Description("Set this to output attributes instead of elements when possible")]
-        public bool UseAttributes
+        
+        public JsonToXmlStream(TextReader reader)
         {
-            get; set;
+            this.jsonInput = reader;
+            this.settings = new JsonToXmlStreamSettings();
+        }
+       
+        public JsonToXmlStream(TextReader reader,JsonToXmlStreamSettings settings)
+        {
+            this.jsonInput = reader;
+            this.settings = settings;
         }
 
-        #region Constructors
-        public JsonToXmlStream(TextReader json, string rootname, string ns,string arrayname) : this(json, rootname, ns, arrayname, UTF8Encoding.UTF8)
-        {
-
-        }
-        public JsonToXmlStream(TextReader json, string rootname, string ns) : this(json, rootname, ns, "record", UTF8Encoding.UTF8)
-        {
-
-        }
-        public JsonToXmlStream(TextReader json,string rootname) : this(json, rootname, String.Empty, "record", UTF8Encoding.UTF8)
-        {
-
-        }
-        public JsonToXmlStream(TextReader json):this(json, String.Empty, String.Empty, "record", UTF8Encoding.UTF8)
-        {
-         
-        }
-        public JsonToXmlStream(TextReader json,string rootname, string ns, string arrayname, Encoding encoding)
-        {
-            jsonInput = json;
-            RootName = rootname;
-            Namespace = ns;
-            ArrayName = arrayname;
-            Encoding = encoding;
-        }
-
-
-        #endregion
+        
 
         private void Init()
         {
             if (wtr == null)
             {
+
+                if (String.IsNullOrEmpty(this.settings.Prefix) == false && String.IsNullOrEmpty(this.settings.Namespace))
+                    this.settings.Namespace = "http://jsontoxml/";
+
                 m_stm = new VirtualStream();
                 wtr = XmlWriter.Create(m_stm, new XmlWriterSettings
                 {
-                    Encoding = this.Encoding,
-                    Indent = this.Indent,
-                    OmitXmlDeclaration = this.OmitXmlDeclaration
+                    Encoding = this.settings.Encoding,
+                    Indent = this.settings.Indent,
+                    OmitXmlDeclaration = this.settings.OmitXmlDeclaration  
                 });
                 reader = new JsonTextReader(jsonInput);
 
@@ -108,7 +75,7 @@ namespace Shared.Component
             Init();
 
             if (m_stm.Length == 0)
-                Read(this.RootName);
+                Read(this.settings.RootName);
 
             return m_stm.Read(buffer, offset, count);
 
@@ -118,21 +85,7 @@ namespace Shared.Component
         private void Read(string root = "")
         {
 
-
-            if (root != "")
-            { 
-                if (wtr.WriteState == System.Xml.WriteState.Start && string.IsNullOrEmpty(this.Namespace) == false)
-                {
-
-                    wtr.WriteStartElement(root, this.Namespace);
-                }
-                else
-                {
-                    wtr.WriteStartElement(root);
-                }
-            }
-
-            
+            wtr.WriteStartElement(this.settings.Prefix, root, this.settings.Namespace);
 
             string elementName = String.Empty;
 
@@ -197,16 +150,15 @@ namespace Shared.Component
 
         private void WriteObject(string name)
         {
-            if (wtr.WriteState == System.Xml.WriteState.Start && string.IsNullOrEmpty(this.Namespace) == false)
+            string prefix = null;
+            string ns = null;
+            if (this.settings.PrefixObjects)
             {
-               
-                wtr.WriteStartElement(name,this.Namespace);
+                prefix = this.settings.Prefix;
+                ns = this.settings.Namespace;
             }
-            else
-            {
-                wtr.WriteStartElement(name);
-            }
-           
+
+            wtr.WriteStartElement(prefix, name, ns);
 
             string elementName = name;
 
@@ -216,7 +168,7 @@ namespace Shared.Component
                 {
                     case JsonToken.StartObject:
                         if (elementName == String.Empty)
-                            elementName = this.RootName;
+                            elementName = this.settings.RootName;
 
                             WriteObject(elementName);
                         break;
@@ -263,7 +215,7 @@ namespace Shared.Component
         private void WriteArray(string name)
         {
 
-            string elementName = name;
+            string elementName = (String.IsNullOrEmpty(name) ? this.settings.ArrayName:name);
 
             while (reader.Read())
             {
@@ -271,7 +223,7 @@ namespace Shared.Component
                 {
                     case JsonToken.StartObject:
                         if (elementName == String.Empty)
-                            elementName = this.ArrayName;
+                            elementName = this.settings.ArrayName;
 
                         WriteObject(elementName);
                         break;
@@ -282,6 +234,7 @@ namespace Shared.Component
                     case JsonToken.Boolean:
                     case JsonToken.Bytes:
 
+                        
                         wtr.WriteStartElement(elementName);
                         wtr.WriteValue(reader.Value);
                         wtr.WriteEndElement();
@@ -316,7 +269,7 @@ namespace Shared.Component
 
         private void WriteValue(string elementName)
         {
-            if (UseAttributes && wtr.WriteState == System.Xml.WriteState.Element)
+            if (this.settings.UseAttributes && wtr.WriteState == System.Xml.WriteState.Element)
             {
                 
                 wtr.WriteStartAttribute(elementName);
