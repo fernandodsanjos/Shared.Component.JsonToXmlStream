@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Shared.Component.JsonToXmlStream</id>
-    <version>1.0.1.0</version>
+    <version>1.0.1.2</version>
 		<authors>Fernando Pires</authors>
 		<owners>Fernando Pires</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Converts JSON to XML Stream</description>
-    <releaseNotes>FIX for array only json and prefix possibility</releaseNotes>
+    <releaseNotes>FIX created inner stream earlier</releaseNotes>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="12.0.1" />
     </dependencies>
