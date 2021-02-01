@@ -16,7 +16,7 @@ namespace Shared.Component
     public class JsonToXmlStream:Stream
     {
         private XmlWriter wtr = null;
-        VirtualStream m_stm = null;
+        VirtualStream m_stm = new VirtualStream();
         JsonTextReader reader = null;
         TextReader jsonInput = null;
         JsonToXmlStreamSettings settings = null;
@@ -36,12 +36,14 @@ namespace Shared.Component
         
         public JsonToXmlStream(TextReader reader)
         {
+           
             this.jsonInput = reader;
             this.settings = new JsonToXmlStreamSettings();
         }
        
         public JsonToXmlStream(TextReader reader,JsonToXmlStreamSettings settings)
         {
+           
             this.jsonInput = reader;
             this.settings = settings;
         }
@@ -56,7 +58,7 @@ namespace Shared.Component
                 if (String.IsNullOrEmpty(this.settings.Prefix) == false && String.IsNullOrEmpty(this.settings.Namespace))
                     this.settings.Namespace = "http://jsontoxml/";
 
-                m_stm = new VirtualStream();
+               
                 wtr = XmlWriter.Create(m_stm, new XmlWriterSettings
                 {
                     Encoding = this.settings.Encoding,
