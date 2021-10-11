@@ -1,0 +1,91 @@
+[{
+    "_id": "5c48ba3d1df0ba6882a8f0a9",
+    "index": 0,
+    "guid": "16616817-7d84-49e6-a822-38802a51b969",
+    "isActive": true,
+    "balance": "$3,968.12",
+    "picture": "http://placehold.it/32x32",
+    "age": 23,
+    "eyeColor": "blue",
+    "name": "Banks Berg",
+    "gender": "male",
+    "company": "AUTOMON",
+    "email": "banksberg@automon.com",
+    "phone": "+1 (944) 583-2865",
+    "address": "582 Oriental Boulevard, Woodburn, Ohio, 4925",
+    "about": "Aute id duis amet Lorem ut amet reprehenderit. Sit sit eiusmod duis eu nulla. Commodo laborum irure id labore ipsum. Ad magna ullamco cupidatat do nulla deserunt. Adipisicing ea nostrud voluptate ipsum labore consequat non duis occaecat anim est sunt exercitation. Excepteur proident magna amet est non culpa fugiat adipisicing tempor. Cupidatat sunt consequat elit occaecat esse duis duis.\r\n",
+    "registered": "2015-11-15T07:35:15 -01:00",
+    "latitude": -64.778348,
+    "longitude": -118.876916,
+    "tags": [
+      "dolor",
+      "velit",
+      "eu",
+      "quis",
+      "incididunt",
+      "aute",
+      "consequat"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Hilda Kaufman"
+      },
+      {
+        "id": 1,
+        "name": "Pittman Townsend"
+      },
+      {
+        "id": 2,
+        "name": "Oneal Gomez"
+      }
+    ],
+    "greeting": "Hello, Banks Berg! You have 8 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c48ba3d04e5e4e92a20b624",
+    "index": 1,
+    "guid": "8f0d622d-7fc6-4b07-84cf-81f578bd9fd7",
+    "isActive": false,
+    "balance": "$3,624.11",
+    "picture": "http://placehold.it/32x32",
+    "age": 23,
+    "eyeColor": "brown",
+    "name": "Pam Hopkins",
+    "gender": "female",
+    "company": "ZILLAR",
+    "email": "pamhopkins@zillar.com",
+    "phone": "+1 (997) 576-2795",
+    "address": "511 Utica Avenue, Bergoo, Missouri, 1727",
+    "about": "In sunt sunt laboris occaecat in ullamco proident ea qui aliqua. Lorem anim commodo laboris qui voluptate quis consectetur amet duis Lorem nisi. Voluptate ea cillum laboris labore sint amet ex nostrud nisi est do dolor non.\r\n",
+    "registered": "2014-06-05T12:11:13 -02:00",
+    "latitude": 44.248642,
+    "longitude": -162.530693,
+    "tags": [
+      "ad",
+      "irure",
+      "qui",
+      "velit",
+      "cillum",
+      "ea",
+      "magna"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Alice Kirkland"
+      },
+      {
+        "id": 1,
+        "name": "Shanna Ellis"
+      },
+      {
+        "id": 2,
+        "name": "Sosa Forbes"
+      }
+    ],
+    "greeting": "Hello, Pam Hopkins! You have 4 unread messages.",
+    "favoriteFruit": "strawberry"
+  }
+]

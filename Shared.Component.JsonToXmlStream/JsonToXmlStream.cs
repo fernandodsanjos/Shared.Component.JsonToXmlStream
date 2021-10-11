@@ -21,7 +21,29 @@ namespace Shared.Component
         TextReader jsonInput = null;
         JsonToXmlStreamSettings settings = null;
 
-        
+        HashSet<string> excludes = null;
+
+        private void LoadExcludes()
+        {
+            excludes = new HashSet<string>();
+
+            if (String.IsNullOrEmpty(settings.Exclude) == false)
+            {
+                String[] excl = settings.Exclude.Split(';');
+
+                
+
+                foreach (var item in excl)
+                {
+                    excludes.Add(item);
+                }
+            }
+        }
+
+        private bool Exclude(string name)
+        {
+            return excludes.Contains(name);
+        }
         public JsonToXmlStreamSettings Settings
         {
             get
@@ -39,6 +61,7 @@ namespace Shared.Component
            
             this.jsonInput = reader;
             this.settings = new JsonToXmlStreamSettings();
+            LoadExcludes();
         }
        
         public JsonToXmlStream(TextReader reader,JsonToXmlStreamSettings settings)
@@ -46,6 +69,7 @@ namespace Shared.Component
            
             this.jsonInput = reader;
             this.settings = settings;
+            LoadExcludes();
         }
 
         
@@ -152,6 +176,12 @@ namespace Shared.Component
 
         private void WriteObject(string name)
         {
+            if (Exclude(name))
+            {
+                this.reader.Skip();
+                return;
+            }
+                 
             string prefix = null;
             string ns = null;
             if (this.settings.PrefixObjects)

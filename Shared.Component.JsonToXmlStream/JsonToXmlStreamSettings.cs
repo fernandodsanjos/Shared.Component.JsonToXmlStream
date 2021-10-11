@@ -68,6 +68,15 @@ namespace Shared.Component
         } = "record";
 
         /// <summary>
+        /// Exclude record/objects
+        /// </summary>
+        public string Exclude
+        {
+            get; set;
+        }
+
+
+        /// <summary>
         /// Output encoding
         /// </summary>
         public Encoding Encoding

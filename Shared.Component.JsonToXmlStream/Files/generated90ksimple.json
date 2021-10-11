@@ -1,0 +1,39 @@
+[{
+    "_id": "5c48ba3d1df0ba6882a8f0a9",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Hilda Kaufman"
+      },
+      {
+        "id": 1,
+        "name": "Pittman Townsend"
+      },
+      {
+        "id": 2,
+        "name": "Oneal Gomez"
+      }
+    ],
+    "greeting": "Hello, Banks Berg! You have 8 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c48ba3d04e5e4e92a20b624",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Alice Kirkland"
+      },
+      {
+        "id": 1,
+        "name": "Shanna Ellis"
+      },
+      {
+        "id": 2,
+        "name": "Sosa Forbes"
+      }
+    ],
+    "greeting": "Hello, Pam Hopkins! You have 4 unread messages.",
+    "favoriteFruit": "strawberry"
+  }
+]
