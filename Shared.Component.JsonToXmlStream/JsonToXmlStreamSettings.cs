@@ -75,6 +75,14 @@ namespace Shared.Component
             get; set;
         }
 
+        /// <summary>
+        /// Ignores root node, namespaces and prefixes
+        /// </summary>
+        public bool RawMode
+        {
+            get; set;
+        }
+
 
         /// <summary>
         /// Output encoding

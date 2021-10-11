@@ -78,6 +78,13 @@ namespace Shared.Component
         {
             if (wtr == null)
             {
+                if(this.settings.RawMode)
+                {
+                    this.settings.PrefixObjects = false;
+                    this.settings.Namespace = String.Empty;
+                    this.settings.RootName = String.Empty;
+                }
+
 
                 if (String.IsNullOrEmpty(this.settings.Prefix) == false && String.IsNullOrEmpty(this.settings.Namespace))
                     this.settings.Namespace = "http://jsontoxml/";
@@ -110,8 +117,8 @@ namespace Shared.Component
 
         private void Read(string root = "")
         {
-
-            wtr.WriteStartElement(this.settings.Prefix, root, this.settings.Namespace);
+            if(this.settings.RawMode == false)
+                wtr.WriteStartElement(this.settings.Prefix, root, this.settings.Namespace);
 
             string elementName = String.Empty;
 
