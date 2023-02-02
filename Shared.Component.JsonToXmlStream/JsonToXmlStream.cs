@@ -308,10 +308,10 @@ namespace Shared.Component
 
         private void WriteValue(string elementName)
         {
-            if (this.settings.UseAttributes && wtr.WriteState == System.Xml.WriteState.Element)
+            if ((this.settings.UseAttributes || elementName.StartsWith("@")) && wtr.WriteState == System.Xml.WriteState.Element)
             {
                 
-                wtr.WriteStartAttribute(elementName);
+                wtr.WriteStartAttribute(elementName.StartsWith("@") ? elementName.Substring(1, elementName.Length - 1): elementName);
                 wtr.WriteValue(reader.Value);
                 wtr.WriteEndAttribute();
             }
