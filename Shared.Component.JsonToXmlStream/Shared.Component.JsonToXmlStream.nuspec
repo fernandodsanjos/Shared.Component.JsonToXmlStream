@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Shared.Component.JsonToXmlStream</id>
-    <version>1.0.3.2</version>
+    <version>1.0.3.3</version>
 		<authors>Fernando Pires</authors>
 		<owners>Fernando Pires</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Converts JSON to XML Stream</description>
-    <releaseNotes>FIX for JSON files with @ prefix</releaseNotes>
+    <releaseNotes>Added override possiblities</releaseNotes>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="12.0.1" />
     </dependencies>

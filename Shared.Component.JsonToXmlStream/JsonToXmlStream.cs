@@ -15,13 +15,17 @@ namespace Shared.Component
 {
     public class JsonToXmlStream:Stream
     {
-        private XmlWriter wtr = null;
+       
         VirtualStream m_stm = new VirtualStream();
-        JsonTextReader reader = null;
+   
         TextReader jsonInput = null;
         JsonToXmlStreamSettings settings = null;
 
         HashSet<string> excludes = null;
+
+        protected XmlWriter Writer { get; set; } = null;
+
+        protected JsonTextReader Reader { get; set; } = null;
 
         private void LoadExcludes()
         {
@@ -76,7 +80,7 @@ namespace Shared.Component
 
         private void Init()
         {
-            if (wtr == null)
+            if (Writer == null)
             {
                 if(this.settings.RawMode)
                 {
@@ -90,13 +94,13 @@ namespace Shared.Component
                     this.settings.Namespace = "http://jsontoxml/";
 
                
-                wtr = XmlWriter.Create(m_stm, new XmlWriterSettings
+                Writer = XmlWriter.Create(m_stm, new XmlWriterSettings
                 {
                     Encoding = this.settings.Encoding,
                     Indent = this.settings.Indent,
                     OmitXmlDeclaration = this.settings.OmitXmlDeclaration  
                 });
-                reader = new JsonTextReader(jsonInput);
+                Reader = new JsonTextReader(jsonInput);
 
                 //This does not work on a readonly stream like a network stream
                 //Match match = Regex.Match(json, @"^{[ \x00-\x1F\x7F]*'[a-z]*'[ \x00-\x1F\x7F]*:[ \x00-\x1F\x7F]*{", RegexOptions.IgnoreCase);
@@ -118,22 +122,22 @@ namespace Shared.Component
         private void Read(string root = "")
         {
             if(this.settings.RawMode == false)
-                wtr.WriteStartElement(this.settings.Prefix, root, this.settings.Namespace);
+                Writer.WriteStartElement(this.settings.Prefix, root, this.settings.Namespace);
 
             string elementName = String.Empty;
 
-            while (reader.Read())
+            while (Reader.Read())
             {
-                switch (reader.TokenType)
+                switch (Reader.TokenType)
                 {
                     case JsonToken.StartObject:
                         if (elementName != String.Empty)
                             WriteObject(elementName);
                         break;
                     case JsonToken.EndObject:
-                        if (reader.Depth > 0)
+                        if (Reader.Depth > 0)
                         {
-                            wtr.WriteEndElement();
+                            Writer.WriteEndElement();
                         }
 
                         break;
@@ -158,7 +162,7 @@ namespace Shared.Component
                     case JsonToken.PropertyName:
 
 
-                        elementName = (string)reader.Value;
+                        elementName = (string)Reader.Value;
 
                         break;
                     case JsonToken.StartArray:
@@ -174,8 +178,8 @@ namespace Shared.Component
             }
 
             //Make sure all elements are closed
-            wtr.WriteEndDocument();
-            wtr.Flush();
+            Writer.WriteEndDocument();
+            Writer.Flush();
             m_stm.Position = 0;
 
         }
@@ -185,7 +189,7 @@ namespace Shared.Component
         {
             if (Exclude(name))
             {
-                this.reader.Skip();
+                this.Reader.Skip();
                 return;
             }
                  
@@ -197,13 +201,13 @@ namespace Shared.Component
                 ns = this.settings.Namespace;
             }
 
-            wtr.WriteStartElement(prefix, name, ns);
+            Writer.WriteStartElement(prefix, name, ns);
 
             string elementName = name;
 
-            while (reader.Read())
+            while (Reader.Read())
             {
-                switch (reader.TokenType)
+                switch (Reader.TokenType)
                 {
                     case JsonToken.StartObject:
                         if (elementName == String.Empty)
@@ -212,7 +216,7 @@ namespace Shared.Component
                             WriteObject(elementName);
                         break;
                     case JsonToken.EndObject:
-                        wtr.WriteEndElement();
+                        Writer.WriteEndElement();
                         return;
                     case JsonToken.Date:
                     case JsonToken.String:
@@ -233,7 +237,7 @@ namespace Shared.Component
                         break;
                     case JsonToken.PropertyName:
 
-                        elementName = (string)reader.Value;
+                        elementName = (string)Reader.Value;
 
                         break;
                     // case JsonToken.EndArray:
@@ -256,9 +260,9 @@ namespace Shared.Component
 
             string elementName = (String.IsNullOrEmpty(name) ? this.settings.ArrayName:name);
 
-            while (reader.Read())
+            while (Reader.Read())
             {
-                switch (reader.TokenType)
+                switch (Reader.TokenType)
                 {
                     case JsonToken.StartObject:
                         if (elementName == String.Empty)
@@ -274,9 +278,9 @@ namespace Shared.Component
                     case JsonToken.Bytes:
 
                         
-                        wtr.WriteStartElement(elementName);
-                        wtr.WriteValue(reader.Value);
-                        wtr.WriteEndElement();
+                        Writer.WriteStartElement(elementName);
+                        Writer.WriteValue(Reader.Value);
+                        Writer.WriteEndElement();
 
 
                         break;
@@ -289,7 +293,7 @@ namespace Shared.Component
                     case JsonToken.PropertyName:
 
 
-                        elementName = (string)reader.Value;
+                        elementName = (string)Reader.Value;
 
                         break;
                     case JsonToken.EndArray:
@@ -308,20 +312,36 @@ namespace Shared.Component
 
         private void WriteValue(string elementName)
         {
-            if ((this.settings.UseAttributes || elementName.StartsWith("@")) && wtr.WriteState == System.Xml.WriteState.Element)
+            if ((this.settings.UseAttributes || elementName.StartsWith("@")) && Writer.WriteState == System.Xml.WriteState.Element)
             {
-                
-                wtr.WriteStartAttribute(elementName.StartsWith("@") ? elementName.Substring(1, elementName.Length - 1): elementName);
-                wtr.WriteValue(reader.Value);
-                wtr.WriteEndAttribute();
+
+                WriteAttribute(elementName,Reader.Value);
             }
             else
             {
-                wtr.WriteStartElement(elementName);
-                wtr.WriteValue(reader.Value);
-                wtr.WriteEndElement();
+                WriteElement(elementName, Reader.Value);
             }
         }
+
+        public virtual void WriteContent(object value)
+        {
+            Writer.WriteValue(value);
+        }
+
+        public virtual void WriteAttribute(string attributetName, object value)
+        {
+            Writer.WriteStartAttribute(attributetName.StartsWith("@") ? attributetName.Substring(1, attributetName.Length - 1) : attributetName);
+            WriteContent(value);
+            Writer.WriteEndAttribute();
+        }
+
+        public virtual void WriteElement(string elementName, object value)
+        {
+            Writer.WriteStartElement(elementName);
+            WriteContent(value);
+            Writer.WriteEndElement();
+        }
+
         #region Stream standard overrides
         public override void Write(byte[] buffer, int offset, int count)
         {
