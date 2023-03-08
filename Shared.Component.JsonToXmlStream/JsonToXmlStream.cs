@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace Shared.Component
 {
+    [Serializable]
     public class JsonToXmlStream:Stream
     {
        
@@ -93,7 +94,7 @@ namespace Shared.Component
                 if (String.IsNullOrEmpty(this.settings.Prefix) == false && String.IsNullOrEmpty(this.settings.Namespace))
                     this.settings.Namespace = "http://jsontoxml/";
 
-               
+
                 Writer = XmlWriter.Create(m_stm, new XmlWriterSettings
                 {
                     Encoding = this.settings.Encoding,
@@ -330,6 +331,9 @@ namespace Shared.Component
 
         public virtual void WriteAttribute(string attributetName, object value)
         {
+            if (settings.IgnoreEmpty && (value == null || (value is String && String.IsNullOrEmpty((string)value))))
+                return;
+
             Writer.WriteStartAttribute(attributetName.StartsWith("@") ? attributetName.Substring(1, attributetName.Length - 1) : attributetName);
             WriteContent(value);
             Writer.WriteEndAttribute();
@@ -337,6 +341,9 @@ namespace Shared.Component
 
         public virtual void WriteElement(string elementName, object value)
         {
+            if (settings.IgnoreEmpty && (value == null || (value is String && String.IsNullOrEmpty((string)value))))
+                return;
+
             Writer.WriteStartElement(elementName);
             WriteContent(value);
             Writer.WriteEndElement();

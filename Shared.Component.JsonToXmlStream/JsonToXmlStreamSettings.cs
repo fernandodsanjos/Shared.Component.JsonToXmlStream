@@ -10,12 +10,22 @@ using System.Xml;
 using Microsoft.BizTalk.Streaming;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace Shared.Component
 {
+  [Serializable]
     public class JsonToXmlStreamSettings
     {
 
+        /// <summary>
+        /// Ignore empty elements
+        /// </summary>
+        [Description("Ignore empty")]
+        public bool IgnoreEmpty
+        {
+            get; set;
+        } = false;
 
         /// <summary>
         /// Namespace prefix
@@ -83,7 +93,7 @@ namespace Shared.Component
             get; set;
         }
 
-
+        
         /// <summary>
         /// Output encoding
         /// </summary>
