@@ -93,7 +93,7 @@ namespace Shared.Component
             get; set;
         }
 
-        
+        [TypeConverter(typeof(EncodingTypeConverter))]
         /// <summary>
         /// Output encoding
         /// </summary>
