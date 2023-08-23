@@ -334,7 +334,7 @@ namespace Shared.Component
             if (settings.IgnoreEmpty && (value == null || (value is String && String.IsNullOrEmpty((string)value))))
                 return;
 
-            Writer.WriteStartAttribute(attributetName.StartsWith("@") ? attributetName.Substring(1, attributetName.Length - 1) : attributetName);
+            Writer.WriteStartAttribute(SafeName(attributetName.StartsWith("@") ? attributetName.Substring(1, attributetName.Length - 1) : attributetName));
             WriteContent(value);
             Writer.WriteEndAttribute();
         }
@@ -344,9 +344,24 @@ namespace Shared.Component
             if (settings.IgnoreEmpty && (value == null || (value is String && String.IsNullOrEmpty((string)value))))
                 return;
 
-            Writer.WriteStartElement(elementName);
+           
+
+            Writer.WriteStartElement(SafeName(elementName));
             WriteContent(value);
             Writer.WriteEndElement();
+          
+              
+
+            
+           
+        }
+
+        private string SafeName(string name)
+        {
+            if (Char.IsDigit(name[0]))
+                name = "_" + name;
+
+            return name;
         }
 
         #region Stream standard overrides
