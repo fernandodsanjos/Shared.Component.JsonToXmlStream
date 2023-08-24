@@ -193,7 +193,9 @@ namespace Shared.Component
                 this.Reader.Skip();
                 return;
             }
-                 
+
+            name = SafeName(name);
+
             string prefix = null;
             string ns = null;
             if (this.settings.PrefixObjects)
@@ -260,6 +262,8 @@ namespace Shared.Component
         {
 
             string elementName = (String.IsNullOrEmpty(name) ? this.settings.ArrayName:name);
+
+            elementName = SafeName(elementName);
 
             while (Reader.Read())
             {
