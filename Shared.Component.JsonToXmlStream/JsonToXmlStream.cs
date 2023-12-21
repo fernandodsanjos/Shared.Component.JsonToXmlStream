@@ -348,7 +348,13 @@ namespace Shared.Component
             if (settings.IgnoreEmpty && (value == null || (value is String && String.IsNullOrEmpty((string)value))))
                 return;
 
-           
+            if (Exclude(elementName) && Reader.Depth == 1 && Reader.Path == elementName)
+            {
+                this.Reader.Skip();
+                return;
+            }
+
+
 
             Writer.WriteStartElement(SafeName(elementName));
             WriteContent(value);

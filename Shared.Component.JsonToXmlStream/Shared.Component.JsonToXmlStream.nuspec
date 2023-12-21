@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Shared.Component.JsonToXmlStream</id>
-    <version>1.0.3.11</version>
+    <version>1.1.0.0</version>
 		<authors>Fernando Pires</authors>
 		<owners>Fernando Pires</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Converts JSON to XML Stream</description>
-    <releaseNotes>FIX also for object name(s) that starts with a number</releaseNotes>
+    <releaseNotes>Exclude now also applies to elements on the root level</releaseNotes>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="13.0.2" />
     </dependencies>
