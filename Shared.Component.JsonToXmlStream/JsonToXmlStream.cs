@@ -196,6 +196,15 @@ namespace Shared.Component
 
             name = SafeName(name);
 
+            if (this.settings.Rename)
+            {
+                if ((String.IsNullOrEmpty(this.settings.OldName) || String.IsNullOrEmpty(this.settings.NewName)) == false)
+                {
+                    if (name == this.settings.OldName)
+                        name = this.settings.NewName;
+                }
+            }
+
             string prefix = null;
             string ns = null;
             if (this.settings.PrefixObjects)

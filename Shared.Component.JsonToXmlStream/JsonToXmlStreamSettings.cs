@@ -19,6 +19,28 @@ namespace Shared.Component
     {
 
         /// <summary>
+        /// Allows renaming of one specific object
+        /// </summary>
+        [Description("Allows renaming of one specific object")]
+        [Category("Rename")]
+        public bool Rename
+        {
+            get; set;
+        } = false;
+
+       
+        [Category("Rename")]
+        public string OldName
+        {
+            get; set;
+        }
+
+        [Category("Rename")]
+        public string NewName
+        {
+            get; set;
+        }
+        /// <summary>
         /// Ignore empty elements
         /// </summary>
         [Description("Ignore empty")]
