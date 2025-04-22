@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Xml;
-using Microsoft.BizTalk.Streaming;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;

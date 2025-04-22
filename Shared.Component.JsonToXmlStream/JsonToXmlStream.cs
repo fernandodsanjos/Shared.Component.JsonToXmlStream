@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Xml;
-using Microsoft.BizTalk.Streaming;
+using Shared.Component.Streams;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -357,7 +357,8 @@ namespace Shared.Component
             if (settings.IgnoreEmpty && (value == null || (value is String && String.IsNullOrEmpty((string)value))))
                 return;
 
-            if (Exclude(elementName) && Reader.Depth == 1 && Reader.Path == elementName)
+           
+            if (Exclude(elementName))
             {
                 this.Reader.Skip();
                 return;

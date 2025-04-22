@@ -2,17 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Shared.Component.JsonToXmlStream</id>
-    <version>1.2.0.0</version>
+    <version>1.3.1.0</version>
 		<authors>Fernando Pires</authors>
 		<owners>Fernando Pires</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Converts JSON to XML Stream</description>
-    <releaseNotes>Added rename possibility</releaseNotes>
+    <releaseNotes>Updated Exclude statement for WriteElement</releaseNotes>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="13.0.2" />
     </dependencies>
 	</metadata>
 	<files>
-		<file src="bin\debug\Shared.Component.JsonToXmlStream.dll" target="lib\net46" />
+		<file src="bin\debug\Shared.Component.JsonToXmlStream.dll" target="lib\net472" />
 	</files>
 </package>
